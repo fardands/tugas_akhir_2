@@ -7,12 +7,14 @@ class EditStudent extends StatefulWidget {
   dynamic nama;
   dynamic kelas;
   dynamic sekolah;
+  dynamic telp;
   EditStudent(
       {super.key,
       required this.id,
       required this.nama,
       required this.kelas,
-      required this.sekolah});
+      required this.sekolah,
+      required this.telp});
 
   @override
   State<StatefulWidget> createState() {
@@ -24,9 +26,11 @@ class _EditStudent extends State<EditStudent> {
   TextEditingController nama = TextEditingController();
   TextEditingController kelas = TextEditingController();
   TextEditingController sekolah = TextEditingController();
+  TextEditingController telp = TextEditingController();
 
   Future<void> _updateItem(int id) async {
-    await SQLHelper.updateItem(id, nama.text, kelas.text, sekolah.text);
+    await SQLHelper.updateItem(
+        id, nama.text, kelas.text, sekolah.text, telp.text);
   }
 
   @override
@@ -34,6 +38,7 @@ class _EditStudent extends State<EditStudent> {
     nama.text = widget.nama;
     kelas.text = widget.kelas;
     sekolah.text = widget.sekolah;
+    telp.text = widget.telp;
     super.initState();
   }
 
@@ -55,6 +60,9 @@ class _EditStudent extends State<EditStudent> {
               ),
               TextField(
                 controller: sekolah,
+              ),
+              TextField(
+                controller: telp,
               ),
               ElevatedButton(
                   onPressed: () async {

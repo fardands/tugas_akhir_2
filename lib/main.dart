@@ -15,7 +15,6 @@ class ListStudents extends StatelessWidget {
     return const MaterialApp(
         // Remove the debug banner
         debugShowCheckedModeBanner: false,
-        title: 'Daftar Murid Ekstrakurikuler',
         home: HomePage());
   }
 }
@@ -72,16 +71,47 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) => Card(
                   margin: const EdgeInsets.all(15),
                   child: ListTile(
-                      title: Text("Nama: " +
-                          _journals[index]['nama'] +
-                          " | Kelas: " +
-                          _journals[index]['kelas']),
-                      subtitle:
-                          Text("Asal Sekolah: " + _journals[index]['sekolah']),
+                      title: Text("Nama: " + _journals[index]['nama']),
+                      subtitle: Text("Kelas: " + _journals[index]['kelas']),
                       trailing: SizedBox(
-                        width: 100,
+                        width: 150,
                         child: Row(
                           children: [
+                            IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SizedBox(
+                                        //height: 200,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            //mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              const Text("Detail Murid"),
+                                              Text("Nama: " +
+                                                  _journals[index]['nama']),
+                                              Text("Kelas: " +
+                                                  _journals[index]['kelas']),
+                                              Text("Sekolah: " +
+                                                  _journals[index]['sekolah']),
+                                              Text("Nomor hp: " +
+                                                  _journals[index]['telp']),
+                                              ElevatedButton(
+                                                child: const Text('Tutup'),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.text_snippet)),
                             IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () async {
@@ -93,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                                       nama: _journals[index]['nama'],
                                       kelas: _journals[index]['kelas'],
                                       sekolah: _journals[index]['sekolah'],
+                                      telp: _journals[index]['telp'],
                                     );
                                   }));
                                   _refreshJournals();

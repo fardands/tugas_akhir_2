@@ -14,6 +14,7 @@ class _AddStudent extends State<AddStudent> {
   TextEditingController nama = TextEditingController();
   TextEditingController kelas = TextEditingController();
   TextEditingController sekolah = TextEditingController();
+  TextEditingController telp = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,12 @@ class _AddStudent extends State<AddStudent> {
                   hintText: "Sekolah",
                 ),
               ),
+              TextField(
+                controller: telp,
+                decoration: const InputDecoration(
+                  hintText: "Nomor telepon/hp",
+                ),
+              ),
               ElevatedButton(
                   onPressed: () async {
                     await _addItem();
@@ -59,6 +66,6 @@ class _AddStudent extends State<AddStudent> {
   }
 
   Future<void> _addItem() async {
-    await SQLHelper.createItem(nama.text, kelas.text, sekolah.text);
+    await SQLHelper.createItem(nama.text, kelas.text, sekolah.text, telp.text);
   }
 }

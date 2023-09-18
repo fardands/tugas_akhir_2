@@ -7,14 +7,15 @@ class SQLHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         nama TEXT,
         kelas TEXT,
-        sekolah TEXT
+        sekolah TEXT,
+        telp TEXT
       )
       """);
   }
 
   static Future<sql.Database> db() async {
     return sql.openDatabase(
-      'ekskul.db',
+      'les.db',
       version: 1,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
@@ -24,10 +25,15 @@ class SQLHelper {
 
   // buat murid
   static Future<int> createItem(
-      String nama, String? kelas, String? sekolah) async {
+      String nama, String? kelas, String? sekolah, String? telp) async {
     final db = await SQLHelper.db();
 
-    final data = {'nama': nama, 'kelas': kelas, 'sekolah': sekolah};
+    final data = {
+      'nama': nama,
+      'kelas': kelas,
+      'sekolah': sekolah,
+      'telp': telp
+    };
     final id = await db.insert('murid', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
@@ -48,13 +54,14 @@ class SQLHelper {
 
   // update murid
   static Future<int> updateItem(
-      int id, String nama, String? kelas, String? sekolah) async {
+      int id, String nama, String? kelas, String? sekolah, String? telp) async {
     final db = await SQLHelper.db();
 
     final data = {
       'nama': nama,
       'kelas': kelas,
       'sekolah': sekolah,
+      'telp': telp,
     };
 
     final result =
