@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLHelper {
+  // init table
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE murid(
         id_murid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -21,6 +22,7 @@ class SQLHelper {
       """);
   }
 
+  //init db
   static Future<sql.Database> db() async {
     return sql.openDatabase(
       'les.db',
@@ -60,7 +62,7 @@ class SQLHelper {
     return id;
   }
 
-  // baca
+  // get murid
   static Future<List<Map<String, dynamic>>> getItems() async {
     final db = await SQLHelper.db();
     return db.query(
@@ -69,6 +71,7 @@ class SQLHelper {
     );
   }
 
+  //get aktivitas
   static Future<List<Map<String, dynamic>>> getAct(int id) async {
     final db = await SQLHelper.db();
     return db.query(
@@ -77,13 +80,6 @@ class SQLHelper {
       whereArgs: [id],
       orderBy: 'id_aktivitas',
     );
-  }
-
-  // Read a single item by id
-  // The app doesn't use this method but I put here in case you want to see it
-  static Future<List<Map<String, dynamic>>> getItem(int id) async {
-    final db = await SQLHelper.db();
-    return db.query('murid', where: "id = ?", whereArgs: [id], limit: 1);
   }
 
   // update murid
