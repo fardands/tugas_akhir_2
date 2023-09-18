@@ -1,3 +1,2 @@
 # tugas_akhir_2
-
-A new Flutter project.
+simple student tutor helper app using flutter
