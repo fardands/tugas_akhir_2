@@ -1,40 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_2/list_activity.dart';
-import 'add_student.dart';
-import 'edit_student.dart';
+import 'add_activity.dart';
+import 'edit_activity.dart';
 import 'sql_helper.dart';
 
-void main() {
-  runApp(const ListStudents());
-}
-
-class ListStudents extends StatelessWidget {
-  const ListStudents({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class ListActivity extends StatefulWidget {
+  int id;
+  ListActivity({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-        // Remove the debug banner
-        debugShowCheckedModeBanner: false,
-        home: HomePage());
+  State<StatefulWidget> createState() {
+    return _ListActivity();
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  // All journals
+class _ListActivity extends State<ListActivity> {
   List<Map<String, dynamic>> _journals = [];
-
   bool _isLoading = true;
-  // This function is used to fetch all data from the database
+
   void _refreshJournals() async {
-    final data = await SQLHelper.getItems();
+    final data = await SQLHelper.getAct(widget.id);
     setState(() {
       _journals = data;
       _isLoading = false;
@@ -47,12 +32,11 @@ class _HomePageState extends State<HomePage> {
     _refreshJournals(); // Loading the diary when the app starts
   }
 
-  // Delete an item
   void _deleteItem(int id) async {
-    await SQLHelper.deleteItem('murid', id);
+    await SQLHelper.deleteItem('aktivitas', id);
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Sukses menghapus data murid'),
+      content: Text('Sukses menghapus aktivitas murid'),
     ));
     _refreshJournals();
   }
@@ -61,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Daftar Murid Les'),
+          title: const Text('Daftar Aktivitas Murid'),
         ),
         body: _isLoading
             ? const Center(
@@ -72,22 +56,14 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) => Card(
                   margin: const EdgeInsets.all(15),
                   child: ListTile(
-                      title: Text("Nama: " + _journals[index]['nama']),
-                      subtitle: Text("Kelas: " + _journals[index]['kelas']),
+                      title: Text(_journals[index]['aktivitas']),
+                      subtitle: Text(_journals[index]['tanggal']
+                          .toString()
+                          .substring(0, 10)),
                       trailing: SizedBox(
-                        width: 200,
+                        width: 150,
                         child: Row(
                           children: [
-                            IconButton(
-                                icon: const Icon(Icons.task),
-                                onPressed: () async {
-                                  await Navigator.push(context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                    return ListActivity(
-                                        id: _journals[index]['id_murid']);
-                                  }));
-                                }),
                             IconButton(
                                 onPressed: () {
                                   showModalBottomSheet<void>(
@@ -101,15 +77,13 @@ class _HomePageState extends State<HomePage> {
                                                 MainAxisAlignment.spaceEvenly,
                                             //mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              const Text("Detail Murid"),
-                                              Text("Nama: " +
-                                                  _journals[index]['nama']),
-                                              Text("Kelas: " +
-                                                  _journals[index]['kelas']),
-                                              Text("Sekolah: " +
-                                                  _journals[index]['sekolah']),
-                                              Text("Nomor hp: " +
-                                                  _journals[index]['telp']),
+                                              const Text("Detail Aktivitas"),
+                                              Text("Pelajaran: " +
+                                                  _journals[index]
+                                                      ['aktivitas']),
+                                              Text("Materi: " +
+                                                  _journals[index]
+                                                      ['aktivitasDesc']),
                                               ElevatedButton(
                                                 child: const Text('Tutup'),
                                                 onPressed: () =>
@@ -129,12 +103,11 @@ class _HomePageState extends State<HomePage> {
                                   await Navigator.push(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                    return EditStudent(
-                                      id: _journals[index]['id_murid'],
-                                      nama: _journals[index]['nama'],
-                                      kelas: _journals[index]['kelas'],
-                                      sekolah: _journals[index]['sekolah'],
-                                      telp: _journals[index]['telp'],
+                                    return EditActivity(
+                                      id: _journals[index]['id_aktivitas'],
+                                      aktivitas: _journals[index]['aktivitas'],
+                                      aktivitasDesc: _journals[index]
+                                          ['aktivitasDesc'],
                                     );
                                   }));
                                   _refreshJournals();
@@ -142,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () =>
-                                  _deleteItem(_journals[index]['id_murid']),
+                                  _deleteItem(_journals[index]['id_aktivitas']),
                             ),
                           ],
                         ),
@@ -154,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () async {
               await Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                return const AddStudent();
+                return AddActivity(id: widget.id);
               }));
               _refreshJournals();
             }));
